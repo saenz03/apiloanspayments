@@ -1,0 +1,64 @@
+# Comando para correr el ambiente servidor y oeprar los Endpoint
+dev = "py manage.py runserver 127.0.0.1:8844"
+
+# realiza las diferentes migraciones de los modelos del proyecto api hacia la base de datos.
+make = "py manage.py makemigrations"
+migrate = "py manage.py migrate"
+
+-------------------
+# Pruebas realizadas por cada Endpoint
+
+-----------------KEY--------------------
+# se uso la libreria 'dj-rest-auth' - pip install dj-rest-auth<=2.1.7
+# 01 - crear usuario
+
+curl -X POST http://127.0.0.1:8844/api/registration/ -d "password1=loan1234JUAN&password2=loan1234JUAN&email=test90@test90.com&username=customer90
+
+
+
+# 02 - autenticarse para obtener key
+
+
+curl -X POST http://127.0.0.1:8844/api/auth/login/ -d "password=loan1234JUAN&email=test90@test90.com&username=customer90"
+
+key: 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954
+
+---------------------------------------
+
+# crear cliente
+
+curl -X POST http://127.0.0.1:8844/api/v1/customer/ -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954" -d "external_id=111&status=1&score=1000&preapproved_at=2023-07-20T17:44:00Z"
+
+# consultar cliente
+
+curl -X GET http://127.0.0.1:8844/api/v1/customer/ -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954"
+
+---------------------------------------
+
+# Obtener el balance
+
+curl -X GET "http://127.0.0.1:8844/api/v1/balance/?external_id=111" -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954"
+
+
+---------------------------------------
+
+# Crear prestamo
+
+curl -X POST http://127.0.0.1:8844/api/v1/loan/ -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954" -d "external_id=112p&customer_id=111&status=2&amount=100&outstanding=100"
+
+# Consultar prestamo
+
+curl -X GET "http://127.0.0.1:8844/api/v1/loan/?external_id=111p" -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954"
+
+
+---------------------------------------
+
+# Crear pago
+
+curl -X POST http://127.0.0.1:8844/api/v1/payment/ -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954" -d "customer_id=111p&total_amount=100"
+
+# consultar el pago
+
+
+curl -X GET "http://127.0.0.1:8844/api/v1/payment/?customer_id=111" -H "Authorization: Token 9c94a4fe8369f2fb3f99eebcee2c0fe445ed0954"
+
